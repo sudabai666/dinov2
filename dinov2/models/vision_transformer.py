@@ -223,9 +223,10 @@ class DinoVisionTransformer(nn.Module):
             return self.forward_features_list(x, masks)
 
         x = self.prepare_tokens_with_masks(x, masks)
-
+        x_list = []
         for blk in self.blocks:
             x = blk(x)
+            x_list.append(x)
 
         x_norm = self.norm(x)
         return {
@@ -233,6 +234,7 @@ class DinoVisionTransformer(nn.Module):
             "x_norm_patchtokens": x_norm[:, 1:],
             "x_prenorm": x,
             "masks": masks,
+            "x_list":x_list
         }
 
     def _get_intermediate_layers_not_chunked(self, x, n=1):
